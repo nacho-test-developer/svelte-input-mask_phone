@@ -2,14 +2,12 @@
   import { onMount } from "svelte";
 
   let data = [];
-  let otros = [];
   let cities = [];
-  let search = null;
-  let result = null;
-  let filtered = null;
+  let searchValue = null;
   let db =
     "https://gist.githubusercontent.com/nacho-test-developer/11cbcf693e83f37921b842e3f785e701/raw/38acee6b78ff2fbd3929891669e6b7cd775e4f77/code.json";
 
+  // Fetch DB
   onMount(async function() {
     const response = await fetch(`${db}`);
     try {
@@ -18,17 +16,22 @@
     } catch (e) {}
   });
 
+  // Keydown event
   function handleKeydown(event) {
     if (event.key === "Enter") {
-      return buscar(search);
+      return search(searchValue);
     }
   }
 
-  function buscar(val) {
-    let result = data.filter(aa => aa.code === 11);
-    let result2 = result[0].city;
-    if (result2) {
-      cities = result2.split(",");
+  // Search Method
+  function search(val) {
+    // search by code
+    const result = data.filter(item => item.code === 11);
+    // list of cities from code search
+    let found = result[0].city;
+    if (found) {
+      // new cities array
+      cities = found.split(",");
       return cities;
     }
   }
@@ -49,7 +52,7 @@
           id="search"
           placeholder="Ej: 351"
           type="text"
-          bind:value={search}
+          bind:value={searchValue}
           on:keydown={handleKeydown}
         >
       </div>
